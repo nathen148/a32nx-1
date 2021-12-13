@@ -1438,6 +1438,10 @@ class A320_Neo_CDU_MainDisplay extends FMCMainDisplay {
                 .replace(/-{3,}/g, "<br/><br/>");
         });
 
+        const websocketLines = formattedValues.map((l) => {
+            return l.replace(/<br\/>[ ]*/g, '\n');
+        });
+
         if (SimVar.GetSimVarValue("L:A32NX_PRINTER_PRINTING", "bool") === 1) {
             SimVar.SetSimVarValue("L:A32NX_PAGES_PRINTED", "number", SimVar.GetSimVarValue("L:A32NX_PAGES_PRINTED", "number") + 1);
             SimVar.SetSimVarValue("L:A32NX_PRINT_PAGE_OFFSET", "number", 0);
@@ -1446,6 +1450,7 @@ class A320_Neo_CDU_MainDisplay extends FMCMainDisplay {
         SimVar.SetSimVarValue("L:A32NX_PAGE_ID", "number", SimVar.GetSimVarValue("L:A32NX_PAGE_ID", "number") + 1);
         SimVar.SetSimVarValue("L:A32NX_PRINTER_PRINTING", "bool", 0).then(v => {
             this.fmgcMesssagesListener.triggerToAllSubscribers('A32NX_PRINT', formattedValues);
+            this.sendToSocket(`print:${JSON.stringify({lines: websocketLines})}`);
             setTimeout(() => {
                 SimVar.SetSimVarValue("L:A32NX_PRINTER_PRINTING", "bool", 1);
                 this.printing = false;
