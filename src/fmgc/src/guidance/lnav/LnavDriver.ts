@@ -365,10 +365,10 @@ export class LnavDriver implements GuidanceComponent {
 
         this.guidanceController.flightPlanManager.setActiveWaypointIndex(++wpIndex, () => {}, 0);
 
+        outboundTransition?.freeze();
+
         // Set turn state based on turn direction
         if (outboundTransition && (outboundTransition instanceof PathCaptureTransition || outboundTransition instanceof CourseCaptureTransition)) {
-            outboundTransition.freeze();
-
             if (outboundTransition.turnDirection === TurnDirection.Left) {
                 this.turnState = LnavTurnState.ForceLeftTurn;
             } else if (outboundTransition.turnDirection === TurnDirection.Right) {
