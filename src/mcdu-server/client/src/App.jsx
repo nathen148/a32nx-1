@@ -37,7 +37,11 @@ function App() {
         sendMessage,
         lastMessage,
         readyState,
-    } = useWebSocket(socketUrl);
+    } = useWebSocket(socketUrl, {
+        shouldReconnect: () => true,
+        reconnectAttempts: Infinity,
+        reconnectInterval: 500,
+    });
 
     useEffect(() => {
         if (readyState === ReadyState.OPEN) {
